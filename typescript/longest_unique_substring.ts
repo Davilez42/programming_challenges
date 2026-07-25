@@ -13,7 +13,7 @@ En el ejemplo: "abcdefghij" (longitud 10).
 **/
 
 const longestUniqueSubstr = (n: string) => {
-  let map = {};
+  let map: Record<string, number> = {};
   let left = 0;
   let rigth = 0;
   let maxSubString: string = "";
