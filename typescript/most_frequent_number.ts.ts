@@ -17,17 +17,16 @@ const numbersRepeat = (n: Array<number>): Record<string, number> | null => {
   let maxNumberRepeat: number = n[0];
   for (let i = 0; i < n.length; i++) {
     const element = n[i];
-    if (numbersCount.has(element)) {
-      let total: number = numbersCount.get(element) as number;
-      total += 1;
-      numbersCount.set(element, total);
-      if (total > maxTotalRepeat) {
-        maxTotalRepeat = total;
-        maxNumberRepeat = element;
-      }
-    } else {
-      numbersCount.set(element, 1);
+    let total: number = numbersCount.get(element) ?? 0;
+
+    total++;
+
+    if (total > maxTotalRepeat) {
+      maxTotalRepeat = total;
+      maxNumberRepeat = element;
     }
+
+    numbersCount.set(element, total);
   }
   return {
     number: maxNumberRepeat,

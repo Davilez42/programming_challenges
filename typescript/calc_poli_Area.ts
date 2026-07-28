@@ -24,7 +24,7 @@ class Square implements Shape {
   constructor(readonly base: number) {}
 
   calcArea(): number {
-    return this.base * 2;
+    return this.base * this.base;
   }
 }
 
