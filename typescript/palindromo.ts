@@ -45,8 +45,47 @@ function isPalindromo(text: string): boolean {
   return true;
 }
 
-//isPalindromo("Anilina"); // true
-console.log(isPalindromo("La ruta nos aportó otro paso natural!!!!")); // true
-// isPalindromo("¡Yo dono rosas, oro no doy!"); // true
-// isPalindromo("A man, a plan, a canal: Panama"); // true
-// isPalindromo("Programación"); // false
+function runTests() {
+  console.log("Ejecutando pruebas de palíndromos...\n");
+
+  const cases: Array<{ input: string; expected: boolean; name: string }> = [
+    { input: "Anilina", expected: true, name: "palabra simple" },
+    {
+      input: "La ruta nos aportó otro paso natural.",
+      expected: true,
+      name: "frase larga con tilde y punto",
+    },
+    {
+      input: "¡Yo dono rosas, oro no doy!",
+      expected: true,
+      name: "signos y espacios asimétricos",
+    },
+    {
+      input: "¿Acaso hubo búhos acá?",
+      expected: true,
+      name: "interrogación y tildes",
+    },
+    {
+      input: "A man, a plan, a canal: Panama",
+      expected: true,
+      name: "palíndromo clásico con puntuación",
+    },
+    { input: "Programación", expected: false, name: "no palíndromo" },
+  ];
+
+  for (const testCase of cases) {
+    const actual = isPalindromo(testCase.input);
+    console.assert(
+      actual === testCase.expected,
+      `Falló: ${testCase.name} debe devolver ${testCase.expected}. Obtenido: ${actual}`,
+    );
+
+    if (actual === testCase.expected) {
+      console.log(`✓ ${testCase.name} pasado`);
+    }
+  }
+
+  console.log("\nPruebas completadas");
+}
+
+runTests();

@@ -62,7 +62,35 @@ function decipher(text: string, key: number) {
 
   return decipherText;
 }
-const cipherText = ceaserCipher("¡Hola, 123!", 45);
+function runTests() {
+  console.log("Ejecutando pruebas de cifrado César...\n");
 
-console.log(cipherText);
-console.log(decipher(cipherText, 45));
+  const cases: Array<{ input: string; key: number; expected: string; name: string }> = [
+    { input: "abc", key: 1, expected: "bcd", name: "desplazamiento básico" },
+    { input: "ABC", key: 1, expected: "BCD", name: "mantiene mayúsculas" },
+    { input: "xyz", key: 3, expected: "abc", name: "desbordamiento del alfabeto" },
+    { input: "Hola", key: 5, expected: "Mtqf", name: "palabra con mayúscula inicial" },
+  ];
+
+  for (const testCase of cases) {
+    const actual = ceaserCipher(testCase.input, testCase.key);
+    console.assert(
+      actual === testCase.expected,
+      `Falló: ${testCase.name} debe devolver "${testCase.expected}". Obtenido: "${actual}"`,
+    );
+
+    const decoded = decipher(actual, testCase.key);
+    console.assert(
+      decoded === testCase.input,
+      `Falló: ${testCase.name} descifrado debe devolver "${testCase.input}". Obtenido: "${decoded}"`,
+    );
+
+    if (actual === testCase.expected && decoded === testCase.input) {
+      console.log(`✓ ${testCase.name} pasado`);
+    }
+  }
+
+  console.log("\nPruebas completadas");
+}
+
+runTests();

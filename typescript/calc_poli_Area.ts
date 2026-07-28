@@ -1,4 +1,6 @@
 /*
+ * DESCRIPCIÓN DEL PROBLEMA: ÁREA DE POLÍGONOS
+ *
  * Crea una única función (importante que sólo sea una) que sea capaz
  * de calcular y retornar el área de un polígono.
  * - La función recibirá por parámetro sólo UN polígono a la vez.
@@ -38,10 +40,28 @@ function calcAreaShape(shape: Shape) {
   return shape.calcArea();
 }
 
-const t1 = new Triangle(3, 4);
-const s1 = new Square(5);
-const r1 = new Rectángule(3, 9);
+function runTests() {
+  console.log("Ejecutando pruebas de área de polígonos...\n");
 
-console.log(calcAreaShape(t1));
-console.log(calcAreaShape(s1));
-console.log(calcAreaShape(r1));
+  const cases: Array<{ shape: Shape; expected: number; name: string }> = [
+    { shape: new Triangle(3, 4), expected: 6, name: "triángulo" },
+    { shape: new Square(5), expected: 25, name: "cuadrado" },
+    { shape: new Rectángule(3, 9), expected: 27, name: "rectángulo" },
+  ];
+
+  for (const testCase of cases) {
+    const actual = calcAreaShape(testCase.shape);
+    console.assert(
+      actual === testCase.expected,
+      `Falló: ${testCase.name} debe devolver ${testCase.expected}. Obtenido: ${actual}`,
+    );
+
+    if (actual === testCase.expected) {
+      console.log(`✓ ${testCase.name} pasado`);
+    }
+  }
+
+  console.log("\nPruebas completadas");
+}
+
+runTests();

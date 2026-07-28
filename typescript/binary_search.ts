@@ -1,3 +1,16 @@
+/*
+ * DESCRIPCIÓN DEL PROBLEMA: BÚSQUEDA BINARIA
+ *
+ * Dado un arreglo ordenado de números y un elemento objetivo, determina si el
+ * elemento existe en el arreglo.
+ *
+ * Reglas:
+ * 1. El arreglo de entrada debe estar ordenado de forma ascendente.
+ * 2. La función debe retornar true si el elemento existe y false si no existe.
+ * 3. Se comparan tres enfoques: búsqueda binaria iterativa, búsqueda lineal y
+ *    búsqueda binaria recursiva.
+ */
+
 const binarySearch = (list: number[], element: number): boolean => {
   let i = 0;
   let j = list.length - 1;
@@ -51,83 +64,51 @@ const binarySearchRecursive = (
   }
 };
 
-//testiando los 2 algoritmos
+function runTests() {
+  console.log("Ejecutando pruebas de búsqueda binaria...\n");
 
-const testBinarySearchAlgorithm = async () => {
-  const generateArray = (size_: number) => {
-    const array: number[] = [];
-    for (let i = 0; i < size_; i++) {
-      const number_random = Math.ceil(Math.random() * 10000000);
-      array.push(number_random);
+  const cases: Array<{ list: number[]; element: number; expected: boolean; name: string }> = [
+    { list: [1], element: 1, expected: true, name: "un elemento encontrado" },
+    { list: [1], element: 2, expected: false, name: "un elemento no encontrado" },
+    { list: [1, 2, 3, 4, 5], element: 1, expected: true, name: "primer elemento" },
+    { list: [1, 2, 3, 4, 5], element: 5, expected: true, name: "último elemento" },
+    { list: [1, 2, 3, 4, 5], element: 3, expected: true, name: "elemento central" },
+    { list: [-10, -3, 0, 8, 11], element: -3, expected: true, name: "números negativos" },
+  ];
+
+  for (const testCase of cases) {
+    const iterative = binarySearch(testCase.list, testCase.element);
+    const lineal = binarySearchLineal(testCase.list, testCase.element);
+    const recursive = binarySearchRecursive(
+      testCase.list,
+      testCase.element,
+      0,
+      testCase.list.length - 1,
+    );
+
+    console.assert(
+      iterative === testCase.expected,
+      `Falló: ${testCase.name} iterativa debe devolver ${testCase.expected}. Obtenido: ${iterative}`,
+    );
+    console.assert(
+      lineal === testCase.expected,
+      `Falló: ${testCase.name} lineal debe devolver ${testCase.expected}. Obtenido: ${lineal}`,
+    );
+    console.assert(
+      recursive === testCase.expected,
+      `Falló: ${testCase.name} recursiva debe devolver ${testCase.expected}. Obtenido: ${recursive}`,
+    );
+
+    if (
+      iterative === testCase.expected &&
+      lineal === testCase.expected &&
+      recursive === testCase.expected
+    ) {
+      console.log(`✓ ${testCase.name} pasado`);
     }
-    array.sort((a, b) => a - b);
-    return array;
-  };
-
-  let cant_test = 100;
-
-  let dates: Record<number | string, Record<string, number>> = {};
-
-  for (let i = 0; i < cant_test; i++) {
-    const arrayTest = generateArray((i + 1) * 100);
-
-    dates[i] = { array_size: (i + 1) * 100 };
-
-    const element_random =
-      arrayTest[Math.ceil(Math.random() * (arrayTest.length - 1))];
-
-    //test binarySearchIterative
-    const init_time_searchIterative = performance.now();
-    binarySearch(arrayTest, element_random);
-    const end_time_searchIterative = performance.now();
-    dates[i].iterative = end_time_searchIterative - init_time_searchIterative;
-
-    const init_time_searchLineal = performance.now();
-    binarySearchLineal(arrayTest, element_random);
-    const end_time_searchLineal = performance.now();
-    dates[i].lineal = end_time_searchLineal - init_time_searchLineal;
-
-    const init_time_searchRecursive = performance.now();
-    binarySearchRecursive(arrayTest, element_random, 0, arrayTest.length - 1);
-    const end_time_searchRecursive = performance.now();
-    dates[i].recursive = end_time_searchRecursive - init_time_searchRecursive;
-
-    const init_time_functionIncludes = performance.now();
-    arrayTest.includes(element_random);
-    const end_time_functionIncludes = performance.now();
-    dates[i].funIncludes =
-      end_time_functionIncludes - init_time_functionIncludes;
   }
 
-  //calculate average
-  const average_iterative: number[] = [];
-  const average_lineal: number[] = [];
-  const average_recursive: number[] = [];
-  const average_fIncludes: number[] = [];
-  for (const i in dates) {
-    average_iterative.push(dates[i].iterative);
-    average_lineal.push(dates[i].lineal);
-    average_recursive.push(dates[i].recursive);
-    average_fIncludes.push(dates[i].funIncludes);
-  }
+  console.log("\nPruebas completadas");
+}
 
-  dates = {
-    ...dates,
-    average: {
-      iterative: average_iterative.reduce((a, b) => a + b) / cant_test,
-      recursive: average_recursive.reduce((a, b) => a + b) / cant_test,
-      funIncludes: average_fIncludes.reduce((a, b) => a + b) / cant_test,
-      lineal: average_lineal.reduce((a, b) => a + b) / cant_test,
-    },
-  };
-
-  console.table(dates, [
-    "array_size",
-    "iterative",
-    "lineal",
-    "recursive",
-    "funIncludes",
-  ]);
-};
-
-testBinarySearchAlgorithm();
+runTests();

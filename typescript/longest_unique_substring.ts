@@ -1,16 +1,18 @@
 /**
- * 📄 Enunciado
-Dada una cadena de caracteres, encuentra la subcadena más larga que no contenga ningún carácter repetido.
-
-📥 Entrada
-Una cadena de longitud n, por ejemplo:
-"abrkaabcdefghijjxxx"
-
-📤 Salida esperada
-La subcadena más larga sin caracteres repetidos.
-
-En el ejemplo: "abcdefghij" (longitud 10).
-**/
+ * DESCRIPCIÓN DEL PROBLEMA: SUBCADENA MÁS LARGA SIN CARACTERES REPETIDOS
+ *
+ * Dada una cadena de texto, encuentra la subcadena continua más larga que no
+ * contenga caracteres repetidos.
+ *
+ * Reglas:
+ * 1. La búsqueda debe respetar el orden original de la cadena.
+ * 2. Si hay varias respuestas con la misma longitud, se acepta la primera que
+ *    aparezca durante el recorrido.
+ * 3. Una cadena vacía debe devolver una cadena vacía.
+ *
+ * Ejemplo:
+ * - "abrkaabcdefghijjxxx" -> "abcdefghij"
+ */
 
 const longestUniqueSubstr = (n: string) => {
   let map: Record<string, number> = {};
@@ -40,12 +42,39 @@ const longestUniqueSubstr = (n: string) => {
   return maxSubString;
 };
 
-console.log(longestUniqueSubstr("abrkaabcdefghijjxxx")); //abcdefghij
-console.log(longestUniqueSubstr("12312345abcabc")); // "12345abc"
-console.log(longestUniqueSubstr("aaaaa")); // "a"
-console.log(longestUniqueSubstr("")); // ""
-console.log(longestUniqueSubstr("abcdef")); // "abcdef"
-console.log(longestUniqueSubstr("abcabcbb")); // "abc"
-console.log(longestUniqueSubstr("pwwkew")); // "wke"  (or "kew")
-console.log(longestUniqueSubstr("abrkaabcdefghijjxxx")); // "abcdefghij"
-console.log(longestUniqueSubstr("a!b@c#a!")); // "!b@c#"
+function runTests() {
+  console.log("Ejecutando pruebas de subcadena más larga sin repetidos...\n");
+
+  const cases: Array<{ input: string; expected: string; name: string }> = [
+    { input: "", expected: "", name: "cadena vacía" },
+    { input: "aaaaa", expected: "a", name: "todos los caracteres repetidos" },
+    { input: "abcdef", expected: "abcdef", name: "sin caracteres repetidos" },
+    { input: "abcabcbb", expected: "abc", name: "repetición al final de ventana" },
+    { input: "pwwkew", expected: "wke", name: "ventana se desplaza por duplicado interno" },
+    {
+      input: "abrkaabcdefghijjxxx",
+      expected: "abcdefghij",
+      name: "caso largo con reinicio de ventana",
+    },
+    { input: "a!b@c#a!", expected: "a!b@c#", name: "caracteres especiales" },
+  ];
+
+  let passed = 0;
+
+  for (const testCase of cases) {
+    const actual = longestUniqueSubstr(testCase.input);
+    console.assert(
+      actual === testCase.expected,
+      `Falló: ${testCase.name} debe devolver "${testCase.expected}". Obtenido: "${actual}"`,
+    );
+
+    if (actual === testCase.expected) {
+      console.log(`✓ ${testCase.name} pasado`);
+    }
+    passed++;
+  }
+
+  console.log(`\nPruebas completadas: ${passed}/${cases.length} ejecutadas`);
+}
+
+runTests();

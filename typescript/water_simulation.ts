@@ -1,4 +1,6 @@
 /*
+ * DESCRIPCIÓN DEL PROBLEMA: SIMULACIÓN CLIMÁTICA
+ *
  * Crea una función que simule las condiciones climáticas (temperatura y probabilidad de lluvia)
  * de un lugar ficticio al pasar un número concreto de días según estas reglas:
  * - La temperatura inicial y el % de probabilidad de lluvia lo define el usuario.
@@ -70,4 +72,102 @@ function climateSimulation(
   };
 }
 
-console.log(climateSimulation(364, 50, 100));
+function createRandomSequence(values: number[]): () => number {
+  let index = 0;
+  return () => {
+    const value = values[index];
+    index++;
+    if (value === undefined) {
+      return 0.5;
+    }
+    return value;
+  };
+}
+
+function runWithMockedRandom<T>(values: number[], callback: () => T): T {
+  const originalRandom = Math.random;
+  const originalLog = console.log;
+  Math.random = createRandomSequence(values);
+  console.log = () => undefined;
+
+  try {
+    return callback();
+  } finally {
+    Math.random = originalRandom;
+    console.log = originalLog;
+  }
+}
+
+function runTests() {
+  console.log("Ejecutando pruebas de simulación climática...\n");
+
+  const isEqual = (a: unknown, b: unknown) =>
+    JSON.stringify(a) === JSON.stringify(b);
+
+  const noRain = runWithMockedRandom(
+    [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
+    () => climateSimulation(3, 20, 0),
+  );
+  const noRainExpected = {
+    days: 3,
+    daysRain: 0,
+    maxTemperature: 20,
+    minTemperature: 20,
+    currentTemperature: 20,
+  };
+
+  const noRainOk = isEqual(noRain, noRainExpected);
+  console.assert(
+    noRainOk,
+    `Falló: sin lluvia debe devolver ${JSON.stringify(noRainExpected)}. Obtenido: ${JSON.stringify(noRain)}`,
+  );
+  if (noRainOk) {
+    console.log("✓ Sin lluvia pasado");
+  }
+
+  const alwaysRain = runWithMockedRandom(
+    [0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
+    () => climateSimulation(2, 30, 100),
+  );
+  const alwaysRainExpected = {
+    days: 2,
+    daysRain: 2,
+    maxTemperature: 29,
+    minTemperature: 28,
+    currentTemperature: 28,
+  };
+
+  const alwaysRainOk = isEqual(alwaysRain, alwaysRainExpected);
+  console.assert(
+    alwaysRainOk,
+    `Falló: lluvia constante debe devolver ${JSON.stringify(alwaysRainExpected)}. Obtenido: ${JSON.stringify(alwaysRain)}`,
+  );
+  if (alwaysRainOk) {
+    console.log("✓ Lluvia constante pasado");
+  }
+
+  const temperatureChange = runWithMockedRandom(
+    [0.05, 0.25, 0.9, 0.9],
+    () => climateSimulation(1, 10, 0),
+  );
+  const temperatureChangeExpected = {
+    days: 1,
+    daysRain: 0,
+    maxTemperature: 12,
+    minTemperature: 12,
+    currentTemperature: 12,
+  };
+
+  const temperatureChangeOk = isEqual(temperatureChange, temperatureChangeExpected);
+  console.assert(
+    temperatureChangeOk,
+    `Falló: cambio de temperatura debe devolver ${JSON.stringify(temperatureChangeExpected)}. Obtenido: ${JSON.stringify(temperatureChange)}`,
+  );
+  if (temperatureChangeOk) {
+    console.log("✓ Cambio de temperatura pasado");
+  }
+
+  console.log("\nPruebas completadas");
+}
+
+runTests();
